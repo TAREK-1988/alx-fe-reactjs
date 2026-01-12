@@ -9,12 +9,14 @@ function App() {
   return (
     <BrowserRouter>
       <Navbar />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/services" element={<Services />} />
-        <Route path="/contact" element={<Contact />} />
-      </Routes>
+      <div style={{ maxWidth: "900px", margin: "0 auto" }}>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/services" element={<Services />} />
+          <Route path="/contact" element={<Contact />} />
+        </Routes>
+      </div>
     </BrowserRouter>
   );
 }
