@@ -1,1 +1,17 @@
+header,
+main,
+footer {
+  margin: 1rem 0;
+  padding: 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+}
+
+footer {
+  opacity: 0.9;
+}
+
+div {
+  margin-bottom: 1rem;
+}
 
