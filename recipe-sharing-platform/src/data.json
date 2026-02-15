@@ -1,0 +1,64 @@
+[
+  {
+    "id": 1,
+    "title": "Spaghetti Carbonara",
+    "summary": "A classic Italian pasta dish with eggs, cheese, bacon, and black pepper.",
+    "image": "https://images.unsplash.com/photo-1523986371872-9d3ba2e2f642?auto=format&fit=crop&w=900&q=60",
+    "ingredients": [
+      "200g spaghetti",
+      "2 eggs",
+      "60g parmesan cheese",
+      "120g bacon",
+      "Black pepper",
+      "Salt"
+    ],
+    "steps": [
+      "Boil the pasta in salted water until al dente.",
+      "Cook bacon until crisp, then reduce heat.",
+      "Whisk eggs with parmesan and pepper in a bowl.",
+      "Toss pasta with bacon (off heat), then quickly mix in egg-cheese sauce.",
+      "Serve immediately with extra parmesan and pepper."
+    ]
+  },
+  {
+    "id": 2,
+    "title": "Chicken Tikka Masala",
+    "summary": "Grilled chicken pieces cooked in a creamy tomato-based sauce.",
+    "image": "https://images.unsplash.com/photo-1604908176997-125f25cc500f?auto=format&fit=crop&w=900&q=60",
+    "ingredients": [
+      "500g chicken breast",
+      "1 cup yogurt",
+      "2 tbsp tikka spice mix",
+      "1 onion",
+      "2 cups tomato puree",
+      "1/2 cup cream",
+      "Salt"
+    ],
+    "steps": [
+      "Marinate chicken in yogurt and spices for at least 30 minutes.",
+      "Grill or pan-sear chicken until browned.",
+      "Sauté onion until golden, add tomato puree and simmer.",
+      "Add cream and chicken; simmer until cooked through.",
+      "Serve with rice or naan."
+    ]
+  },
+  {
+    "id": 3,
+    "title": "Avocado Toast",
+    "summary": "Quick, healthy toast topped with mashed avocado and seasonings.",
+    "image": "https://images.unsplash.com/photo-1551183053-bf91a1d81141?auto=format&fit=crop&w=900&q=60",
+    "ingredients": [
+      "2 slices bread",
+      "1 ripe avocado",
+      "1 tbsp lemon juice",
+      "Salt",
+      "Chili flakes (optional)"
+    ],
+    "steps": [
+      "Toast the bread slices.",
+      "Mash avocado with lemon juice and salt.",
+      "Spread avocado on toast.",
+      "Top with chili flakes if desired."
+    ]
+  }
+]
