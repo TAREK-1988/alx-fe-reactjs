@@ -5,45 +5,39 @@ export default function RegistrationForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const [errors, setErrors] = useState({});
-  const [status, setStatus] = useState({ loading: false, message: "", error: "" });
+  const [errors, setErrors] = useState({ username: "", email: "", password: "" });
+  const [message, setMessage] = useState("");
 
-  const validate = () => {
-    const newErrors = {};
-    if (!username.trim()) newErrors.username = "Username is required";
-    if (!email.trim()) newErrors.email = "Email is required";
-    if (!password.trim()) newErrors.password = "Password is required";
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    setStatus({ loading: false, message: "", error: "" });
+    setMessage("");
 
-    if (!validate()) return;
+    let hasError = false;
+    const newErrors = { username: "", email: "", password: "" };
 
-    try {
-      setStatus({ loading: true, message: "", error: "" });
-
-      const res = await fetch("https://jsonplaceholder.typicode.com/users", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, email, password })
-      });
-
-      if (!res.ok) throw new Error("Registration failed");
-
-      await res.json();
-
-      setStatus({ loading: false, message: "Registered successfully!", error: "" });
-      setUsername("");
-      setEmail("");
-      setPassword("");
-      setErrors({});
-    } catch (err) {
-      setStatus({ loading: false, message: "", error: err.message || "Something went wrong" });
+    if (!username) {
+      newErrors.username = "Username is required";
+      hasError = true;
     }
+
+    if (!email) {
+      newErrors.email = "Email is required";
+      hasError = true;
+    }
+
+    if (!password) {
+      newErrors.password = "Password is required";
+      hasError = true;
+    }
+
+    setErrors(newErrors);
+
+    if (hasError) return;
+
+    setMessage("Form submitted successfully!");
+    setUsername("");
+    setEmail("");
+    setPassword("");
   };
 
   return (
@@ -82,7 +76,6 @@ export default function RegistrationForm() {
 
         <button
           type="submit"
-          disabled={status.loading}
           style={{
             padding: 10,
             borderRadius: 10,
@@ -93,11 +86,10 @@ export default function RegistrationForm() {
             cursor: "pointer"
           }}
         >
-          {status.loading ? "Submitting..." : "Register"}
+          Register
         </button>
 
-        {status.message && <p style={{ color: "green", margin: 0 }}>{status.message}</p>}
-        {status.error && <p style={{ color: "crimson", margin: 0 }}>{status.error}</p>}
+        {message && <p style={{ color: "green", margin: 0 }}>{message}</p>}
       </div>
     </form>
   );
