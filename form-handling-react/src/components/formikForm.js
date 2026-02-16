@@ -1,71 +1,90 @@
-import { Form, Field, Formik, ErrorMessage } from "formik";
+import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { useState } from "react";
 
-function mockRegisterApi(payload) {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      if (String(payload.email || "").toLowerCase().includes("fail")) {
-        reject(new Error("Mock API: Registration failed for this email."));
-        return;
-      }
-      resolve({ ok: true, userId: Math.floor(Math.random() * 100000), ...payload });
-    }, 700);
-  });
-}
-
-const schema = Yup.object({
-  username: Yup.string().trim().required("Username is required"),
-  email: Yup.string().trim().email("Invalid email").required("Email is required"),
-  password: Yup.string().trim().min(6, "Min 6 characters").required("Password is required")
+const validationSchema = Yup.object({
+  username: Yup.string().required("Username is required"),
+  email: Yup.string().email("Invalid email").required("Email is required"),
+  password: Yup.string().required("Password is required")
 });
 
 export default function FormikForm() {
-  const [apiError, setApiError] = useState("");
-  const [apiResult, setApiResult] = useState(null);
-
   return (
     <Formik
       initialValues={{ username: "", email: "", password: "" }}
-      validationSchema={schema}
-      onSubmit={async (values, { resetForm, setSubmitting }) => {
-        setApiError("");
-        setApiResult(null);
+      validationSchema={validationSchema}
+      onSubmit={async (values, { resetForm, setSubmitting, setStatus }) => {
+        setStatus({ message: "", error: "" });
+
         try {
-          const res = await mockRegisterApi(values);
-          setApiResult(res);
+          const res = await fetch("https://jsonplaceholder.typicode.com/users", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(values)
+          });
+
+          if (!res.ok) throw new Error("Registration failed");
+
+          await res.json();
+
+          setStatus({ message: "Registered successfully!", error: "" });
           resetForm();
         } catch (err) {
-          setApiError(err?.message || "Something went wrong");
+          setStatus({ message: "", error: err.message || "Something went wrong" });
         } finally {
           setSubmitting(false);
         }
       }}
     >
-      {({ isSubmitting }) => (
-        <Form noValidate>
-          <label htmlFor="username">Username</label>
-          <Field id="username" name="username" placeholder="e.g. noah" />
-          <ErrorMessage name="username" component="div" className="error" />
-
-          <label htmlFor="email">Email</label>
-          <Field id="email" name="email" placeholder="e.g. noah@mail.com" />
-          <ErrorMessage name="email" component="div" className="error" />
-
-          <label htmlFor="password">Password</label>
-          <Field id="password" name="password" type="password" placeholder="••••••••" />
-          <ErrorMessage name="password" component="div" className="error" />
-
-          <button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? "Registering..." : "Register"}
-          </button>
-
-          {apiError && <div className="error">{apiError}</div>}
-          {apiResult?.ok && (
-            <div className="success">
-              Registered successfully. User ID: <b>{apiResult.userId}</b>
+      {({ isSubmitting, status }) => (
+        <Form>
+          <div style={{ display: "grid", gap: 10 }}>
+            <div>
+              <label>Username</label>
+              <Field
+                name="username"
+                style={{ width: "100%", padding: 10, borderRadius: 8, border: "1px solid #ccc" }}
+              />
+              <ErrorMessage name="username" component="p" style={{ color: "crimson", margin: "6px 0 0" }} />
             </div>
-          )}
+
+            <div>
+              <label>Email</label>
+              <Field
+                name="email"
+                style={{ width: "100%", padding: 10, borderRadius: 8, border: "1px solid #ccc" }}
+              />
+              <ErrorMessage name="email" component="p" style={{ color: "crimson", margin: "6px 0 0" }} />
+            </div>
+
+            <div>
+              <label>Password</label>
+              <Field
+                name="password"
+                type="password"
+                style={{ width: "100%", padding: 10, borderRadius: 8, border: "1px solid #ccc" }}
+              />
+              <ErrorMessage name="password" component="p" style={{ color: "crimson", margin: "6px 0 0" }} />
+            </div>
+
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              style={{
+                padding: 10,
+                borderRadius: 10,
+                border: 0,
+                background: "#5E6AD2",
+                color: "white",
+                fontWeight: 700,
+                cursor: "pointer"
+              }}
+            >
+              {isSubmitting ? "Submitting..." : "Register"}
+            </button>
+
+            {status?.message && <p style={{ color: "green", margin: 0 }}>{status.message}</p>}
+            {status?.error && <p style={{ color: "crimson", margin: 0 }}>{status.error}</p>}
+          </div>
         </Form>
       )}
     </Formik>
