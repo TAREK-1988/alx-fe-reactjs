@@ -1,115 +1,104 @@
-import { useMemo, useState } from "react";
-
-function mockRegisterApi(payload) {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      if (String(payload.email || "").toLowerCase().includes("fail")) {
-        reject(new Error("Mock API: Registration failed for this email."));
-        return;
-      }
-      resolve({ ok: true, userId: Math.floor(Math.random() * 100000), ...payload });
-    }, 700);
-  });
-}
+import { useState } from "react";
 
 export default function RegistrationForm() {
-  const [form, setForm] = useState({ username: "", email: "", password: "" });
-  const [touched, setTouched] = useState({ username: false, email: false, password: false });
-  const [loading, setLoading] = useState(false);
-  const [apiResult, setApiResult] = useState(null);
-  const [apiError, setApiError] = useState("");
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  const errors = useMemo(() => {
-    const e = {};
-    if (!form.username.trim()) e.username = "Username is required";
-    if (!form.email.trim()) e.email = "Email is required";
-    if (!form.password.trim()) e.password = "Password is required";
-    return e;
-  }, [form]);
+  const [errors, setErrors] = useState({});
+  const [status, setStatus] = useState({ loading: false, message: "", error: "" });
 
-  const hasErrors = Object.keys(errors).length > 0;
+  const validate = () => {
+    const newErrors = {};
+    if (!username.trim()) newErrors.username = "Username is required";
+    if (!email.trim()) newErrors.email = "Email is required";
+    if (!password.trim()) newErrors.password = "Password is required";
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
-  function onChange(e) {
-    const { name, value } = e.target;
-    setForm((p) => ({ ...p, [name]: value }));
-    setApiResult(null);
-    setApiError("");
-  }
-
-  function onBlur(e) {
-    const { name } = e.target;
-    setTouched((p) => ({ ...p, [name]: true }));
-  }
-
-  async function onSubmit(e) {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setTouched({ username: true, email: true, password: true });
-    setApiResult(null);
-    setApiError("");
-    if (hasErrors) return;
+    setStatus({ loading: false, message: "", error: "" });
+
+    if (!validate()) return;
 
     try {
-      setLoading(true);
-      const res = await mockRegisterApi(form);
-      setApiResult(res);
-      setForm({ username: "", email: "", password: "" });
-      setTouched({ username: false, email: false, password: false });
+      setStatus({ loading: true, message: "", error: "" });
+
+      const res = await fetch("https://jsonplaceholder.typicode.com/users", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, email, password })
+      });
+
+      if (!res.ok) throw new Error("Registration failed");
+
+      await res.json();
+
+      setStatus({ loading: false, message: "Registered successfully!", error: "" });
+      setUsername("");
+      setEmail("");
+      setPassword("");
+      setErrors({});
     } catch (err) {
-      setApiError(err?.message || "Something went wrong");
-    } finally {
-      setLoading(false);
+      setStatus({ loading: false, message: "", error: err.message || "Something went wrong" });
     }
-  }
+  };
 
   return (
-    <form onSubmit={onSubmit} noValidate>
-      <label htmlFor="username">Username</label>
-      <input
-        id="username"
-        name="username"
-        value={form.username}
-        onChange={onChange}
-        onBlur={onBlur}
-        placeholder="e.g. noah"
-        autoComplete="username"
-      />
-      {touched.username && errors.username && <div className="error">{errors.username}</div>}
-
-      <label htmlFor="email">Email</label>
-      <input
-        id="email"
-        name="email"
-        value={form.email}
-        onChange={onChange}
-        onBlur={onBlur}
-        placeholder="e.g. noah@mail.com"
-        autoComplete="email"
-      />
-      {touched.email && errors.email && <div className="error">{errors.email}</div>}
-
-      <label htmlFor="password">Password</label>
-      <input
-        id="password"
-        name="password"
-        type="password"
-        value={form.password}
-        onChange={onChange}
-        onBlur={onBlur}
-        placeholder="••••••••"
-        autoComplete="new-password"
-      />
-      {touched.password && errors.password && <div className="error">{errors.password}</div>}
-
-      <button type="submit" disabled={loading}>
-        {loading ? "Registering..." : "Register"}
-      </button>
-
-      {apiError && <div className="error">{apiError}</div>}
-      {apiResult?.ok && (
-        <div className="success">
-          Registered successfully. User ID: <b>{apiResult.userId}</b>
+    <form onSubmit={handleSubmit}>
+      <div style={{ display: "grid", gap: 10 }}>
+        <div>
+          <label>Username</label>
+          <input
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            style={{ width: "100%", padding: 10, borderRadius: 8, border: "1px solid #ccc" }}
+          />
+          {errors.username && <p style={{ color: "crimson", margin: "6px 0 0" }}>{errors.username}</p>}
         </div>
-      )}
+
+        <div>
+          <label>Email</label>
+          <input
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            style={{ width: "100%", padding: 10, borderRadius: 8, border: "1px solid #ccc" }}
+          />
+          {errors.email && <p style={{ color: "crimson", margin: "6px 0 0" }}>{errors.email}</p>}
+        </div>
+
+        <div>
+          <label>Password</label>
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            style={{ width: "100%", padding: 10, borderRadius: 8, border: "1px solid #ccc" }}
+          />
+          {errors.password && <p style={{ color: "crimson", margin: "6px 0 0" }}>{errors.password}</p>}
+        </div>
+
+        <button
+          type="submit"
+          disabled={status.loading}
+          style={{
+            padding: 10,
+            borderRadius: 10,
+            border: 0,
+            background: "#5E6AD2",
+            color: "white",
+            fontWeight: 700,
+            cursor: "pointer"
+          }}
+        >
+          {status.loading ? "Submitting..." : "Register"}
+        </button>
+
+        {status.message && <p style={{ color: "green", margin: 0 }}>{status.message}</p>}
+        {status.error && <p style={{ color: "crimson", margin: 0 }}>{status.error}</p>}
+      </div>
     </form>
   );
 }
