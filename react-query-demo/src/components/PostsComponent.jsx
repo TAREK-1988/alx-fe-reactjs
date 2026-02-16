@@ -10,42 +10,52 @@ export default function PostsComponent() {
   const {
     data,
     isLoading,
-    isFetching,
     isError,
     error,
     refetch,
-    dataUpdatedAt
+    isFetching
   } = useQuery(["posts"], fetchPosts, {
-    staleTime: 30_000,
-    cacheTime: 5 * 60_000,
+    staleTime: 30000,
+    cacheTime: 300000,
     refetchOnWindowFocus: false
   });
 
   return (
     <div>
-      <div className="row">
-        <button onClick={() => refetch()} disabled={isFetching}>
-          {isFetching ? "Refetching..." : "Refetch"}
+      <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+        <button
+          onClick={() => refetch()}
+          disabled={isFetching}
+          style={{
+            padding: 10,
+            borderRadius: 10,
+            border: 0,
+            background: "#26C281",
+            color: "white",
+            fontWeight: 700,
+            cursor: "pointer"
+          }}
+        >
+          {isFetching ? "Refetching..." : "Refetch Posts"}
         </button>
-        <span className="muted">
-          {dataUpdatedAt ? `Last updated: ${new Date(dataUpdatedAt).toLocaleTimeString()}` : ""}
+
+        <span style={{ opacity: 0.8 }}>
+          {isFetching ? "Updating..." : "Cache enabled (staleTime + cacheTime)"}
         </span>
       </div>
 
-      {isLoading && <p className="muted">Loading...</p>}
-      {isError && <p className="error">{error?.message || "Error"}</p>}
+      {isLoading && <p>Loading...</p>}
+      {isError && <p style={{ color: "crimson" }}>{error?.message}</p>}
 
       {Array.isArray(data) && (
-        <div className="list">
-          {data.slice(0, 12).map((p) => (
-            <div className="post" key={p.id}>
-              <div style={{ fontWeight: 700, marginBottom: 6 }}>
-                #{p.id} — {p.title}
-              </div>
-              <div className="muted">{p.body}</div>
-            </div>
+        <ul style={{ marginTop: 16, paddingLeft: 18 }}>
+          {data.slice(0, 10).map((post) => (
+            <li key={post.id} style={{ marginBottom: 10 }}>
+              <b>{post.title}</b>
+              <div style={{ opacity: 0.8 }}>{post.body}</div>
+            </li>
           ))}
-        </div>
+        </ul>
       )}
     </div>
   );
