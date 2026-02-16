@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
-import PostsComponent from "./components/PostsComponent.jsx";
+import PostsComponent from "./components/PostsComponent.js";
 
 const queryClient = new QueryClient();
 
@@ -9,22 +9,30 @@ export default function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="container">
-        <div className="card">
-          <h1 style={{ marginTop: 0 }}>React Query: Posts</h1>
-          <p className="muted">
-            Toggle mount/unmount to see caching behavior, and use Refetch to update on demand.
-          </p>
+      <div style={{ maxWidth: 900, margin: "0 auto", padding: 20 }}>
+        <h1>React Query Demo</h1>
 
-          <div className="row">
-            <button className="secondary" onClick={() => setShowPosts((p) => !p)}>
-              {showPosts ? "Hide Posts (Unmount)" : "Show Posts (Mount)"}
-            </button>
-          </div>
+        <button
+          onClick={() => setShowPosts((v) => !v)}
+          style={{
+            padding: 10,
+            borderRadius: 10,
+            border: 0,
+            background: "#5E6AD2",
+            color: "white",
+            fontWeight: 700,
+            cursor: "pointer"
+          }}
+        >
+          {showPosts ? "Hide Posts (Unmount)" : "Show Posts (Mount)"}
+        </button>
 
-          <div style={{ marginTop: 16 }}>
-            {showPosts ? <PostsComponent /> : <p className="muted">PostsComponent is unmounted.</p>}
-          </div>
+        <div style={{ marginTop: 16 }}>
+          {showPosts ? (
+            <PostsComponent />
+          ) : (
+            <p>PostsComponent is unmounted. Toggle it back to see cache behavior.</p>
+          )}
         </div>
       </div>
     </QueryClientProvider>
