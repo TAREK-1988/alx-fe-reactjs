@@ -1,3 +1,4 @@
+cat > src/components/TodoList.jsx << 'EOF'
 import { useMemo, useState } from "react";
 import AddTodoForm from "./AddTodoForm.jsx";
 
@@ -55,3 +56,4 @@ export default function TodoList() {
     </div>
   );
 }
+EOF
