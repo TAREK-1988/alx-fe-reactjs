@@ -1,10 +1,13 @@
-export default function Login({ onLogin }) {
+import { useAuth } from "./useAuth";
+
+export default function Login() {
+  const { login } = useAuth();
+
   return (
     <div>
       <h2>Login</h2>
       <p>This is a simulated login.</p>
-      <button onClick={onLogin}>Login</button>
+      <button onClick={login}>Login</button>
     </div>
   );
 }
-
