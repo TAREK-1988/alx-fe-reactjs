@@ -1,18 +1,22 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import AddTodoForm from "./AddTodoForm.jsx";
 
-const initialTodos = [
-  { id: 1, title: "Learn React", completed: false },
-  { id: 2, title: "Write Tests", completed: true },
-  { id: 3, title: "Ship Project", completed: false }
+const demoTodos = [
+  { id: 1, text: "Learn React", completed: false },
+  { id: 2, text: "Write tests", completed: false },
+  { id: 3, text: "Ship the feature", completed: true }
 ];
 
 export default function TodoList() {
-  const [todos, setTodos] = useState(initialTodos);
+  const [todos, setTodos] = useState(demoTodos);
 
-  const addTodo = (title) => {
-    const newTodo = { id: Date.now(), title, completed: false };
-    setTodos((prev) => [...prev, newTodo]);
+  const nextId = useMemo(() => {
+    return () => Date.now();
+  }, []);
+
+  const addTodo = (text) => {
+    const todo = { id: nextId(), text, completed: false };
+    setTodos((prev) => [todo, ...prev]);
   };
 
   const toggleTodo = (id) => {
@@ -28,33 +32,26 @@ export default function TodoList() {
   return (
     <div>
       <AddTodoForm onAdd={addTodo} />
-
-      <div className="list" aria-label="todo-list">
-        {todos.map((t) => (
-          <div key={t.id} className="todoItem">
-            <span
-              className={`todoTitle ${t.completed ? "completed" : ""}`}
-              onClick={() => toggleTodo(t.id)}
-              role="button"
-              tabIndex={0}
-              aria-label={`todo-${t.title}`}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") toggleTodo(t.id);
-              }}
-            >
-              {t.title}
-            </span>
-
+      <ul aria-label="todo-list">
+        {todos.map((todo) => (
+          <li key={todo.id}>
             <button
-              className="danger"
-              onClick={() => deleteTodo(t.id)}
-              aria-label={`delete-${t.title}`}
+              type="button"
+              onClick={() => toggleTodo(todo.id)}
+              aria-pressed={todo.completed}
+            >
+              {todo.text}
+            </button>
+            <button
+              type="button"
+              onClick={() => deleteTodo(todo.id)}
+              aria-label={`delete ${todo.text}`}
             >
               Delete
             </button>
-          </div>
+          </li>
         ))}
-      </div>
+      </ul>
     </div>
   );
 }
