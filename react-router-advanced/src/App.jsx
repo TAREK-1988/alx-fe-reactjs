@@ -1,15 +1,12 @@
 import { useState } from "react";
 import { BrowserRouter, Routes, Route, Link, Navigate } from "react-router-dom";
 
-import Home from "./pages/Home.jsx";
-import Login from "./pages/Login.jsx";
-import Blog from "./pages/Blog.jsx";
-import BlogPost from "./pages/BlogPost.jsx";
+import Home from "./components/Home.jsx";
+import Login from "./components/Login.jsx";
+import Blog from "./components/Blog.jsx";
+import BlogPost from "./components/BlogPost.jsx";
 
-import Profile from "./pages/Profile.jsx";
-import ProfileDetails from "./pages/ProfileDetails.jsx";
-import ProfileSettings from "./pages/ProfileSettings.jsx";
-
+import Profile from "./components/Profile.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 
 export default function App() {
@@ -20,10 +17,10 @@ export default function App() {
       <div style={{ maxWidth: 900, margin: "0 auto", padding: 20 }}>
         <h1>React Router Advanced</h1>
 
-        <nav style={{ display: "flex", gap: 12, marginBottom: 18 }}>
+        <nav style={{ display: "flex", gap: 12, marginBottom: 18, flexWrap: "wrap" }}>
           <Link to="/">Home</Link>
           <Link to="/blog">Blog</Link>
-          <Link to="/profile">Profile</Link>
+          <Link to="/profile/details">Profile</Link>
           <Link to="/login">Login</Link>
         </nav>
 
@@ -36,20 +33,16 @@ export default function App() {
           />
 
           <Route path="/blog" element={<Blog />} />
-          <Route path="/blog/:postId" element={<BlogPost />} />
+          <Route path="/blog/:id" element={<BlogPost />} />
 
           <Route
-            path="/profile"
+            path="/profile/*"
             element={
               <ProtectedRoute isAuthenticated={isAuthenticated}>
                 <Profile onLogout={() => setIsAuthenticated(false)} />
               </ProtectedRoute>
             }
-          >
-            <Route index element={<Navigate to="details" replace />} />
-            <Route path="details" element={<ProfileDetails />} />
-            <Route path="settings" element={<ProfileSettings />} />
-          </Route>
+          />
 
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
