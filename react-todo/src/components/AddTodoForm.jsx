@@ -1,3 +1,4 @@
+cat > src/components/AddTodoForm.jsx << 'EOF'
 import { useState } from "react";
 
 export default function AddTodoForm({ onAdd }) {
@@ -25,3 +26,4 @@ export default function AddTodoForm({ onAdd }) {
     </form>
   );
 }
+EOF
