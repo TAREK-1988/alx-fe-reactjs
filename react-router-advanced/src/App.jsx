@@ -1,16 +1,16 @@
-import { useState } from "react";
 import { BrowserRouter, Routes, Route, Link, Navigate } from "react-router-dom";
 
 import Home from "./components/Home.jsx";
 import Login from "./components/Login.jsx";
 import Blog from "./components/Blog.jsx";
 import BlogPost from "./components/BlogPost.jsx";
-
 import Profile from "./components/Profile.jsx";
+
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
+import { useAuth } from "./components/useAuth";
 
 export default function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const { isAuthenticated } = useAuth();
 
   return (
     <BrowserRouter>
@@ -24,13 +24,13 @@ export default function App() {
           <Link to="/login">Login</Link>
         </nav>
 
+        <div style={{ marginBottom: 12, opacity: 0.8 }}>
+          Auth: {isAuthenticated ? "Authenticated" : "Not Authenticated"}
+        </div>
+
         <Routes>
           <Route path="/" element={<Home />} />
-
-          <Route
-            path="/login"
-            element={<Login onLogin={() => setIsAuthenticated(true)} />}
-          />
+          <Route path="/login" element={<Login />} />
 
           <Route path="/blog" element={<Blog />} />
           <Route path="/blog/:id" element={<BlogPost />} />
@@ -38,8 +38,8 @@ export default function App() {
           <Route
             path="/profile/*"
             element={
-              <ProtectedRoute isAuthenticated={isAuthenticated}>
-                <Profile onLogout={() => setIsAuthenticated(false)} />
+              <ProtectedRoute>
+                <Profile />
               </ProtectedRoute>
             }
           />
