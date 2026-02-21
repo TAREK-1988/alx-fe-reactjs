@@ -1,3 +1,4 @@
+cat > jest.config.cjs << 'EOF'
 module.exports = {
   testEnvironment: "jsdom",
   setupFilesAfterEnv: ["<rootDir>/src/setupTests.js"],
@@ -10,3 +11,4 @@ module.exports = {
   },
   testMatch: ["<rootDir>/src/__tests__/**/*.test.(js|jsx)"]
 };
+EOF
