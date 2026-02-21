@@ -1,12 +1,15 @@
 import { Link, Routes, Route } from "react-router-dom";
 import ProfileDetails from "./ProfileDetails.jsx";
 import ProfileSettings from "./ProfileSettings.jsx";
+import { useAuth } from "./useAuth";
 
-export default function Profile({ onLogout }) {
+export default function Profile() {
+  const { logout } = useAuth();
+
   return (
     <div>
       <h2>Profile</h2>
-      <button onClick={onLogout}>Logout</button>
+      <button onClick={logout}>Logout</button>
 
       <div style={{ marginTop: 12 }}>
         <Link to="/profile/details" style={{ marginRight: 10 }}>
