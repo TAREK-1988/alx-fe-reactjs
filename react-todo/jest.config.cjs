@@ -1,11 +1,12 @@
 module.exports = {
   testEnvironment: "jsdom",
   setupFilesAfterEnv: ["<rootDir>/src/setupTests.js"],
-  moduleNameMapper: {
-    "\\.(css|less|scss|sass)$": "identity-obj-proxy"
-  },
   transform: {
     "^.+\\.(js|jsx)$": "babel-jest"
   },
-  testMatch: ["<rootDir>/src/__tests__/**/*.test.js"]
+  moduleFileExtensions: ["js", "jsx"],
+  moduleNameMapper: {
+    "\\.(css|less|sass|scss)$": "identity-obj-proxy"
+  },
+  testMatch: ["<rootDir>/src/__tests__/**/*.test.(js|jsx)"]
 };
